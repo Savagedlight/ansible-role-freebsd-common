@@ -1,0 +1,23 @@
+---
+- name: "pkgng: enable for ports built on this system"
+  #Enable pkgng in make.conf
+  #lineinfile: "dest=/etc/make.conf state=present owner=root group=wheel mode=0644 create=yes insertafter='EOF' line='WITH_PKGNG=yes'"
+  #tags: pkgng
+  # todo: make this conditional for FreeBSD < 10.x (wherever pkgng was made default)
+
+- name: "pkgng: install files"
+  copy: src=pkg/certs/{{item}}.cert dest=/usr/local/etc/ssl/certs/{{item}}.cert owner=root group=wheel mode=0700
+  with_items: "{{savagedlight_fbsdcommon_pkgng_certs}}"
+  when: savagedlight_fbsdcommon_pkgng_certs is defined
+  tags: pkgng
+  
+- name: "pkgng: install repository definitions"
+  copy: src=pkg/repos/{{item}}.conf dest=/usr/local/etc/pkg/repos/{{item}}.conf owner=root group=wheel mode=0700
+  with_items: "{{savagedlight_fbsdcommon_pkgng_repos}}"
+  when: savagedlight_fbsdcommon_pkgng_repos is defined
+  tags: pkgng
+
+- name: "pkgng: Install packages"
+  pkgng: name={{item}} state=present
+  with_items: "{{savagedlight_fbsdcommon_pkgng_installpkgs}}"
+  when: savagedlight_fbsdcommon_pkgng_installpkgs is defined

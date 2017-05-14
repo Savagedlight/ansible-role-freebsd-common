@@ -1,0 +1,7 @@
+---
+
+- name: "misc: rc.conf temporary directory settings (A)"
+  sysrc: name=clear_tmp_enable value=YES state=present
+
+- name: "misc: sysctl tweaking"
+  sysctl: name=net.inet.tcp.per_cpu_timers value=1 state=present
